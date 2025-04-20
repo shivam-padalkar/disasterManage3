@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>All Reports</title>
+  </head>
+  <body
+    style="
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+    "
+  >
+    <nav style="background-color: #343a40; color: white; padding: 1rem">
+      <a
+        href="/"
+        style="color: white; margin-right: 20px; text-decoration: none"
+        >Home</a
+      >
+      <a
+        href="/reports"
+        style="color: white; margin-right: 20px; text-decoration: none"
+        >Reports</a
+      >
+      <a
+        href="/media"
+        style="color: white; margin-right: 20px; text-decoration: none"
+        >Media</a
+      >
+      <a
+        href="/donate"
+        style="color: white; margin-right: 20px; text-decoration: none"
+        >Donate</a
+      >
+      <a href="/livemap" style="color: white; text-decoration: none"
+        >Live Map</a
+      >
+    </nav>
+
+    <div style="padding: 2rem">
+      <h1 style="color: #343a40">Disaster Reports</h1>
+      <a
+        href="/reports/new"
+        style="
+          background-color: #007bff;
+          color: white;
+          padding: 10px 15px;
+          text-decoration: none;
+          border-radius: 5px;
+        "
+        >+ New Report</a
+      >
+
+      <div style="margin-top: 2rem">
+        <% allReports.forEach(report => { %>
+        <div
+          style="
+            background: white;
+            border: 1px solid #ccc;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+          "
+        >
+          <h3 style="margin: 0"><%= report.name %></h3>
+          <p style="margin: 5px 0">
+            <strong>Status:</strong> <%= report.status %>
+          </p>
+          <p style="margin: 5px 0">
+            <strong>Type:</strong> <%= report.disasterType %>
+          </p>
+          <a href="/reports/<%= report._id %>" style="color: #007bff">View</a>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Report Details</title>
+  </head>
+  <body
+    style="
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f1f2f6;
+    "
+  >
+    <nav style="background-color: #2f3542; color: white; padding: 1rem">
+      <a
+        href="/"
+        style="color: white; margin-right: 20px; text-decoration: none"
+        >Home</a
+      >
+      <a
+        href="/reports"
+        style="color: white; margin-right: 20px; text-decoration: none"
+        >Reports</a
+      >
+      <a
+        href="/media"
+        style="color: white; margin-right: 20px; text-decoration: none"
+        >Media</a
+      >
+      <a
+        href="/donate"
+        style="color: white; margin-right: 20px; text-decoration: none"
+        >Donate</a
+      >
+      <a href="/livemap" style="color: white; text-decoration: none"
+        >Live Map</a
+      >
+    </nav>
+
+    <div style="padding: 2rem">
+      <h1 style="color: #2f3542">Disaster Report Details</h1>
+
+      <div
+        style="
+          background-color: white;
+          padding: 2rem;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          max-width: 700px;
+        "
+      >
+        <p><strong>Name:</strong> <%= report.name %></p>
+        <p><strong>Message:</strong> <%= report.message %></p>
+        <p><strong>Latitude:</strong> <%= report.location.lat %></p>
+        <p><strong>Longitude:</strong> <%= report.location.lng %></p>
+        <p><strong>Status:</strong> <%= report.status %></p>
+        <p><strong>Disaster Type:</strong> <%= report.disasterType %></p>
+        <p>
+          <strong>Date:</strong> <%= new Date(report.createdAt).toLocaleString()
+          %>
+        </p>
+
+        <!-- <% if (report.image && report.image.url) { %>
+        <div style="margin-top: 1rem">
+          <img
+            src="<%= report.image.url %>"
+            alt="Report Image"
+            style="max-width: 100%; border-radius: 6px"
+          />
+        </div>
+        <% } %> -->
+
+        <% if (report.image) { %>
+        <img
+          src="<%= report.image %>"
+          alt="Disaster Image"
+          style="max-width: 300px"
+        />
+        <% } %>
+
+        <div style="margin-top: 2rem">
+          <a
+            href="/reports/<%= report._id %>/edit"
+            style="
+              background-color: #ffa502;
+              color: white;
+              padding: 0.5rem 1rem;
+              text-decoration: none;
+              border-radius: 4px;
+            "
+            >Edit</a
+          >
+
+          <form
+            action="/reports/<%= report._id %>?_method=DELETE"
+            method="POST"
+            style="display: inline"
+          >
+            <button
+              type="submit"
+              style="
+                background-color: #ff4757;
+                color: white;
+                padding: 0.5rem 1rem;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+              "
+            >
+              Delete
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <br />
+      <a href="/reports" style="color: #1e90ff; text-decoration: none"
+        >← Back to All Reports</a
+      >
+    </div>
+  </body>
+</html>

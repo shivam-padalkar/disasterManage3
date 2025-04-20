@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Live Map | आपदा रक्षक</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f9fafb;
+        color: #1f2937;
+      }
+
+      nav {
+        background-color: #1f2937;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      nav h1 {
+        color: #ffffff;
+        font-size: 1.5rem;
+      }
+
+      nav a {
+        color: #ffffff;
+        text-decoration: none;
+        margin: 0 1rem;
+        font-weight: 500;
+      }
+
+      section.header {
+        padding: 3rem 2rem;
+        text-align: center;
+      }
+
+      section.header h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      section.header p {
+        color: #4b5563;
+        font-size: 1.1rem;
+      }
+
+      #map {
+        height: 600px;
+        width: 90%;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin: 0 auto;
+      }
+
+      footer {
+        text-align: center;
+        padding: 1rem;
+        background-color: #1f2937;
+        color: white;
+        margin-top: 3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav>
+      <h1>आपदा रक्षक</h1>
+      <div>
+        <a href="/">Home</a>
+        <a href="/reports">Reports</a>
+        <a href="/livemap">Live Map</a>
+        <a href="/donate">Donate</a>
+        <a href="/media">Media</a>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="header">
+      <h2>Live Disaster Map</h2>
+      <p>
+        View real-time disaster reports and alerts plotted across affected
+        regions. Stay aware and stay safe.
+      </p>
+    </section>
+
+    <!-- Live Map -->
+    <div id="map"></div>
+
+    <!-- Footer -->
+    <footer>
+      <p>&copy; 2025 Disaster Management Team. All rights reserved.</p>
+    </footer>
+
+    <!-- LeafletJS -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script>
+      const map = L.map("map").setView([20.5937, 78.9629], 5); // India center
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 18,
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
+
+      // Fetch reports from backend and add markers
+      fetch("/api/reports")
+        .then((res) => res.json())
+        .then((reports) => {
+          reports.forEach((report) => {
+            if (report.location && report.location.lat && report.location.lng) {
+              L.marker([report.location.lat, report.location.lng]).addTo(map)
+                .bindPopup(`
+                  <strong>${report.disasterType}</strong><br />
+                  <b>Status:</b> ${report.status}<br />
+                  <b>Name:</b> ${report.name}<br />
+                  <b>Message:</b> ${report.message || "No message"}
+                `);
+            }
+          });
+        })
+        .catch((err) => {
+          console.error("Failed to load reports:", err);
+        });
+    </script>
+  </body>
+</html>

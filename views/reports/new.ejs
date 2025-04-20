@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>New Disaster Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f9fafc;
+      color: #2f3542;
+    }
+    nav {
+      background-color: #2f3542;
+      padding: 1rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .container {
+      max-width: 700px;
+      margin: 3rem auto;
+      background: white;
+      padding: 2rem 2.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    label {
+      font-weight: 600;
+      margin-top: 1rem;
+      display: block;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      background: #1e90ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #map {
+      height: 300px;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+    }
+    #preview {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/reports">Reports</a>
+    <a href="/media">Media</a>
+    <a href="/donate">Donate</a>
+    <a href="/livemap">Live Map</a>
+  </nav>
+
+  <div class="container">
+    <h1>Submit a New Disaster Report</h1>
+    <form action="/reports" method="POST" enctype="multipart/form-data">
+      <label for="name">Name:</label>
+      <input type="text" name="report[name]" id="name" required />
+
+      <label for="message">Message:</label>
+      <textarea name="report[message]" id="message" rows="4" required></textarea>
+
+      <!-- <label for="location">Location (City/Area):</label> -->
+      <!-- <input type="text" id="location" placeholder="Enter a location (e.g., Mumbai)" required /> -->
+
+      <label for="location">Location (City/Area):</label>
+        <div style="display: flex; flex-wrap: nowrap; gap: 10px; align-items: center; margin-bottom: 1rem;">
+          <input 
+            type="text" 
+            id="location" 
+              placeholder="Enter a location (e.g., Mumbai)" 
+              required 
+              style="flex: 1; padding: 0.75rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;" 
+      />
+  <button 
+    type="button" 
+    id="fetchBtn" 
+    style="white-space: nowrap; padding: 0.75rem 1rem; background: #ffa502; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-bottom: 0.8rem"
+  >
+    Fetch
+  </button>
+</div>
+
+
+      <label for="lat">Latitude:</label>
+      <input type="text" name="report[location][lat]" id="lat" readonly />
+
+      <label for="lng">Longitude:</label>
+      <input type="text" name="report[location][lng]" id="lng" readonly />
+
+      <div id="map"></div>
+
+      <label for="status">Status:</label>
+      <select name="report[status]" id="status">
+        <option value="pending">Pending</option>
+        <option value="critical">Critical</option>
+        <option value="resolved">Resolved</option>
+      </select>
+
+      <label for="type">Disaster Type:</label>
+      <select name="report[disasterType]" id="type" required>
+        <option disabled selected value="">-- Select Disaster Type --</option>
+        <option value="Earthquake">Earthquake</option>
+        <option value="Flood">Flood</option>
+        <option value="Cyclone">Cyclone</option>
+        <option value="Landslide">Landslide</option>
+        <option value="Wildfire">Wildfire</option>
+        <option value="Tsunami">Tsunami</option>
+        <option value="Drought">Drought</option>
+        <option value="Volcanic Eruption">Volcanic Eruption</option>
+        <option value="Thunderstorm">Thunderstorm</option>
+        <option value="Heatwave">Heatwave</option>
+      </select>
+
+      <label for="image">Upload Image:</label>
+      <input type="file" id="image" name="image" accept="image/*" />
+      <img id="preview" />
+
+      <button type="submit">Submit Report</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+  
+  const locationInput = document.getElementById('location');
+  const fetchBtn = document.getElementById('fetchBtn');
+  const latInput = document.getElementById('lat');
+  const lngInput = document.getElementById('lng');
+
+  const map = L.map('map').setView([20.5937, 78.9629], 5); // default India
+  const marker = L.marker([20.5937, 78.9629]).addTo(map);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  fetchBtn.addEventListener('click', () => {
+    const query = locationInput.value;
+    if (!query) return alert('Please enter a location.');
+
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.length === 0) {
+          alert('Location not found. Try something else.');
+          return;
+        }
+        const { lat, lon } = data[0];
+        latInput.value = lat;
+        lngInput.value = lon;
+
+        map.setView([lat, lon], 12);
+        marker.setLatLng([lat, lon]);
+      })
+      .catch(() => alert('Error fetching location data.'));
+  });
+
+  // Image preview
+  document.getElementById('image').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('preview');
+    if (file) {
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = 'block';
+    } else {
+      preview.src = '';
+      preview.style.display = 'none';
+    }
+  });
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Report</title>
+</head>
+<body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f2f6; margin: 0; padding: 0;">
+
+  <nav style="background-color: #2f3542; color: white; padding: 1rem;">
+    <a href="/" style="color: white; margin-right: 20px; text-decoration: none;">Home</a>
+    <a href="/reports" style="color: white; margin-right: 20px; text-decoration: none;">Reports</a>
+    <a href="/media" style="color: white; margin-right: 20px; text-decoration: none;">Media</a>
+    <a href="/donate" style="color: white; margin-right: 20px; text-decoration: none;">Donate</a>
+    <a href="/livemap" style="color: white; text-decoration: none;">Live Map</a>
+  </nav>
+
+  <div style="padding: 2rem;">
+    <h1 style="color: #2f3542;">Edit Disaster Report</h1>
+
+    <form action="/reports/<%= report._id %>?_method=PUT" method="POST" enctype="multipart/form-data" style="background-color: white; padding: 2rem; border-radius: 8px; max-width: 700px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+
+      <label style="font-weight: bold;">Name:</label>
+      <input type="text" name="report[name]" value="<%= report.name %>" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;"><br>
+
+      <label style="font-weight: bold;">Message:</label>
+      <textarea name="report[message]" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;"><%= report.message %></textarea><br>
+
+      <label style="font-weight: bold;">Latitude:</label>
+      <input type="number" name="report[location][lat]" step="any" value="<%= report.location.lat %>" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;"><br>
+
+      <label style="font-weight: bold;">Longitude:</label>
+      <input type="number" name="report[location][lng]" step="any" value="<%= report.location.lng %>" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;"><br>
+
+      <label style="font-weight: bold;">Status:</label>
+      <select name="report[status]" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;">
+        <option value="pending" <%= report.status === "pending" ? "selected" : "" %>>Pending</option>
+        <option value="critical" <%= report.status === "critical" ? "selected" : "" %>>Critical</option>
+        <option value="resolved" <%= report.status === "resolved" ? "selected" : "" %>>Resolved</option>
+      </select><br>
+
+      <label style="font-weight: bold;">Disaster Type:</label>
+      <select name="report[disasterType]" id="disasterType" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;">
+        <option disabled value="">-- Select Disaster Type --</option>
+        <option value="Earthquake" <%= report.disasterType === "Earthquake" ? "selected" : "" %>>Earthquake</option>
+        <option value="Flood" <%= report.disasterType === "Flood" ? "selected" : "" %>>Flood</option>
+        <option value="Cyclone" <%= report.disasterType === "Cyclone" ? "selected" : "" %>>Cyclone</option>
+        <option value="Landslide" <%= report.disasterType === "Landslide" ? "selected" : "" %>>Landslide</option>
+        <option value="Wildfire" <%= report.disasterType === "Wildfire" ? "selected" : "" %>>Wildfire</option>
+        <option value="Tsunami" <%= report.disasterType === "Tsunami" ? "selected" : "" %>>Tsunami</option>
+        <option value="Drought" <%= report.disasterType === "Drought" ? "selected" : "" %>>Drought</option>
+        <option value="Volcanic Eruption" <%= report.disasterType === "Volcanic Eruption" ? "selected" : "" %>>Volcanic Eruption</option>
+        <option value="Thunderstorm" <%= report.disasterType === "Thunderstorm" ? "selected" : "" %>>Thunderstorm</option>
+        <option value="Heatwave" <%= report.disasterType === "Heatwave" ? "selected" : "" %>>Heatwave</option>
+      </select><br>
+
+      <label style="font-weight: bold;">Upload Image:</label>
+      <input type="file" name="image" accept="image/*" style="margin-bottom: 1rem;"><br>
+
+      <button type="submit" style="background-color: #1e90ff; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer;">Update Report</button>
+    </form>
+
+    <br>
+    <a href="/reports/<%= report._id %>" style="color: #1e90ff; text-decoration: none;">← Back to Report</a>
+  </div>
+</body>
+</html>

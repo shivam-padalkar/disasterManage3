@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Disaster Management Portal</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9fafb;
+      color: #111827;
+    "
+  >
+    <div style="flex: 1; display: flex; flex-direction: column">
+      <!-- Navbar -->
+      <nav
+        style="
+          background-color: #1f2937;
+          padding: 1rem 2rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        "
+      >
+        <h1 style="color: #ffffff; font-size: 1.5rem">
+          आपदा रक्षक - Disaster Management System
+        </h1>
+        <div>
+          <a
+            href="/"
+            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
+            >Home</a
+          >
+          <a
+            href="/reports"
+            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
+            >Reports</a
+          >
+          <a
+            href="/livemap"
+            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
+            >Live Map</a
+          >
+          <a
+            href="/donate"
+            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
+            >Donate</a
+          >
+          <a
+            href="/media"
+            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
+            >Media</a
+          >
+        </div>
+      </nav>
+
+      <!-- Hero Section (Full remaining height) with Background Image -->
+      <section
+        style="
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          padding: 2rem;
+          background-image: url('/uploads/collage03.jpg');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          color: white;
+        "
+      >
+        <div
+          style="
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            border-radius: 12px;
+          "
+        >
+          <h2 style="font-size: 3rem; margin-bottom: 1rem">
+            Be Prepared. Stay Safe.
+          </h2>
+          <p style="font-size: 1.25rem; max-width: 700px">
+            Our platform allows you to report disasters, view live updates, and
+            contribute to relief efforts.
+          </p>
+          <div style="margin-top: 2rem">
+            <a
+              href="/reports/new"
+              style="
+                background-color: #2563eb;
+                color: white;
+                padding: 0.75rem 1.5rem;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: bold;
+                margin: 0 1rem;
+              "
+              >Report Now</a
+            >
+            <a
+              href="/livemap"
+              style="
+                border: 2px solid #2563eb;
+                color: #2563eb;
+                padding: 0.75rem 1.5rem;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: bold;
+                margin: 0 1rem;
+                background-color: white;
+              "
+              >Live Map</a
+            >
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer
+      style="
+        text-align: center;
+        padding: 1rem;
+        background-color: #1f2937;
+        color: white;
+      "
+    >
+      <p>&copy; 2025 Disaster Management Team. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
