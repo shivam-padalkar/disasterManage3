@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Dashboard - Disaster Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    
+    nav {
+      background-color: #2f3542;
+      padding: 1rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    header {
+      background-color: #1e90ff;
+      color: white;
+      padding: 2rem;
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    
+    main {
+      padding: 2rem;
+    }
+    
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .stat-card h3 {
+      margin-top: 0;
+      color: #555;
+      font-size: 1.2rem;
+    }
+    
+    .stat-card .stat-value {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #1e90ff;
+      margin: 0.5rem 0;
+    }
+    
+    .section-heading {
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: #2f3542;
+      font-size: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .reports-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .report-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .report-card h4 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    
+    .report-card .report-status {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    
+    .requirements-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0.5rem 0;
+    }
+    
+    .requirements-list li {
+      padding: 0.3rem 0;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .requirements-list .need-count {
+      font-weight: 600;
+    }
+    
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-critical {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .status-resolved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      font-size: 0.9rem;
+    }
+    
+    .btn-primary {
+      background-color: #1e90ff;
+      color: white;
+    }
+    
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .badge-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .badge-delivered {
+      background-color: #d1e7dd;
+      color: #0f5132;
+    }
+    
+    .badge-confirmed {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .alert {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+    }
+    
+    .alert-danger {
+      background-color: #ffe5e5;
+      color: #d63031;
+      border: 1px solid #ffcccc;
+    }
+    
+    .alert-success {
+      background-color: #e5fff2;
+      color: #00b894;
+      border: 1px solid #ccfce8;
+    }
+    
+    .alerts-list {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .alert-item {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .alert-item:last-child {
+      border-bottom: none;
+    }
+    
+    .alert-item .alert-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .alert-item .alert-time {
+      font-size: 0.8rem;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/reports">Reports</a>
+    <a href="/media">Media</a>
+    <a href="/livemap">Live Map</a>
+    <a href="/alerts">Alerts</a>
+    <a href="/donor/dashboard">My Dashboard</a>
+    <span style="margin-left: auto; color: white;">
+      <% if(currentUser) { %>
+        Welcome, <%= currentUser.name || currentUser.username %> |
+        <a href="/logout">Logout</a>
+      <% } else { %>
+        <a href="/login">Login</a>
+      <% } %>
+    </span>
+  </nav>
+  
+  <header>
+    <h1>Donor Dashboard</h1>
+    <p>Track your donations and find opportunities to help</p>
+  </header>
+  
+  <main>
+    <% if(success && success.length) { %>
+      <div class="alert alert-success">
+        <%= success %>
+      </div>
+    <% } %>
+    
+    <% if(error && error.length) { %>
+      <div class="alert alert-danger">
+        <%= error %>
+      </div>
+    <% } %>
+    
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <h3>Your Donations</h3>
+        <div class="stat-value"><%= donationsMade.length %></div>
+        <p>Donations you've pledged</p>
+      </div>
+      
+      <div class="stat-card">
+        <h3>Active Disasters</h3>
+        <div class="stat-value"><%= reportsWithNeeds.filter(r => r.status !== 'resolved').length %></div>
+        <p>Disasters that need assistance</p>
+      </div>
+      
+      <div class="stat-card">
+        <h3>New Alerts</h3>
+        <div class="stat-value"><%= alerts.length %></div>
+        <p>Unread notifications</p>
+      </div>
+    </div>
+    
+    <h2 class="section-heading">Your Donation History</h2>
+    <% if(donationsMade.length === 0) { %>
+      <p>You haven't made any donations yet. Check the reports section to find opportunities to help!</p>
+    <% } else { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Disaster</th>
+            <th>Resource Type</th>
+            <th>Quantity</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% donationsMade.forEach(donation => { %>
+            <tr>
+              <td><%= new Date(donation.donatedOn).toLocaleDateString() %></td>
+              <td>
+                <a href="/reports/<%= donation.reportId %>">
+                  View Report
+                </a>
+              </td>
+              <td><%= donation.requirementType %></td>
+              <td><%= donation.quantity %></td>
+              <td>
+                <% if(donation.status === 'pending') { %>
+                  <span class="badge badge-pending">Pending</span>
+                <% } else if(donation.status === 'delivered') { %>
+                  <span class="badge badge-delivered">Delivered</span>
+                <% } else if(donation.status === 'confirmed') { %>
+                  <span class="badge badge-confirmed">Confirmed</span>
+                <% } %>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+    
+    <h2 class="section-heading">Disasters Needing Help</h2>
+    <div class="reports-list">
+      <% 
+        // Filter reports that have unfulfilled requirements
+        const reportsWithUnfulfilledNeeds = reportsWithNeeds.filter(report => {
+          if (!report.requirements) return false;
+          
+          const r = report.requirements;
+          return (
+            (r.food?.needed && r.food.remainingNeeded > 0) ||
+            (r.water?.needed && r.water.remainingNeeded > 0) ||
+            (r.medicine?.needed && r.medicine.remainingNeeded > 0) ||
+            (r.clothing?.needed && r.clothing.remainingNeeded > 0) ||
+            (r.shelter?.needed && r.shelter.remainingNeeded > 0) ||
+            (r.volunteers?.needed && r.volunteers.remainingNeeded > 0) ||
+            (r.other?.needed && !r.other.fulfilled)
+          );
+        });
+        
+        // Display only first 6 reports
+        const reportsToDisplay = reportsWithUnfulfilledNeeds.slice(0, 6);
+      %>
+      
+      <% if(reportsToDisplay.length === 0) { %>
+        <p>No disasters currently need assistance. Thank you for your support!</p>
+      <% } %>
+      
+      <% reportsToDisplay.forEach(report => { %>
+        <div class="report-card">
+          <h4><%= report.name %></h4>
+          <span class="report-status status-<%= report.status %>">
+            <%= report.status.charAt(0).toUpperCase() + report.status.slice(1) %>
+          </span>
+          <p><strong>Type:</strong> <%= report.disasterType %></p>
+          <p><strong>Date:</strong> <%= new Date(report.createdAt).toLocaleDateString() %></p>
+          
+          <strong>Needed Resources:</strong>
+          <ul class="requirements-list">
+            <% if(report.requirements?.food?.needed && report.requirements.food.remainingNeeded > 0) { %>
+              <li>
+                <span>Food Supplies</span>
+                <span class="need-count"><%= report.requirements.food.remainingNeeded %> packs</span>
+              </li>
+            <% } %>
+            
+            <% if(report.requirements?.water?.needed && report.requirements.water.remainingNeeded > 0) { %>
+              <li>
+                <span>Clean Water</span>
+                <span class="need-count"><%= report.requirements.water.remainingNeeded %> liters</span>
+              </li>
+            <% } %>
+            
+            <% if(report.requirements?.medicine?.needed && report.requirements.medicine.remainingNeeded > 0) { %>
+              <li>
+                <span>Medical Supplies</span>
+                <span class="need-count"><%= report.requirements.medicine.remainingNeeded %> kits</span>
+              </li>
+            <% } %>
+            
+            <% if(report.requirements?.clothing?.needed && report.requirements.clothing.remainingNeeded > 0) { %>
+              <li>
+                <span>Clothing</span>
+                <span class="need-count"><%= report.requirements.clothing.remainingNeeded %> sets</span>
+              </li>
+            <% } %>
+            
+            <% if(report.requirements?.shelter?.needed && report.requirements.shelter.remainingNeeded > 0) { %>
+              <li>
+                <span>Shelter</span>
+                <span class="need-count"><%= report.requirements.shelter.remainingNeeded %> units</span>
+              </li>
+            <% } %>
+            
+            <% if(report.requirements?.volunteers?.needed && report.requirements.volunteers.remainingNeeded > 0) { %>
+              <li>
+                <span>Volunteers</span>
+                <span class="need-count"><%= report.requirements.volunteers.remainingNeeded %> people</span>
+              </li>
+            <% } %>
+          </ul>
+          
+          <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+            <a href="/reports/<%= report._id %>" class="btn btn-primary">View Details</a>
+            <a href="/donate/<%= report._id %>" class="btn btn-success">Donate</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    
+    <h2 class="section-heading">Recent Alerts</h2>
+    <div class="alerts-list">
+      <% if(alerts.length === 0) { %>
+        <p>No new alerts.</p>
+      <% } %>
+      
+      <% alerts.forEach(alert => { %>
+        <div class="alert-item">
+          <div class="alert-title"><%= alert.title %></div>
+          <p><%= alert.message %></p>
+          <div class="alert-time">
+            <%= new Date(alert.createdAt).toLocaleString() %> |
+            <a href="/reports/<%= alert.reportId %>">View Report</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </main>
+</body>
+</html>

@@ -2,77 +2,272 @@
 <html>
   <head>
     <title>All Reports</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+      }
+      nav {
+        background-color: #343a40;
+        color: white;
+        padding: 1rem 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .container {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+      h1 {
+        color: #343a40;
+        margin: 0;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+      }
+      .btn-new {
+        background-color: #007bff;
+        color: white;
+      }
+      .reports-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+      .report-card {
+        background: white;
+        border: 1px solid #ccc;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+      }
+      .report-card:hover {
+        transform: translateY(-5px);
+      }
+      .report-card h3 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        color: #343a40;
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+      .status-critical {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .status-resolved {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .report-info {
+        margin-bottom: 1rem;
+      }
+      .report-info p {
+        margin: 0.3rem 0;
+      }
+      .report-date {
+        color: #6c757d;
+        font-size: 0.9rem;
+      }
+      .report-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+      }
+      .view-link {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .requirements-summary {
+        font-size: 0.9rem;
+        color: #343a40;
+        margin-top: 0.5rem;
+      }
+      .needs-badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .has-needs {
+        background-color: #e74c3c;
+        color: white;
+      }
+      .fulfilled {
+        background-color: #27ae60;
+        color: white;
+      }
+      .filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+        background-color: #f1f2f6;
+        color: #343a40;
+      }
+      .filter-btn.active {
+        background-color: #343a40;
+        color: white;
+      }
+      .alert {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border-radius: 6px;
+      }
+      .alert-success {
+        background-color: #e5fff2;
+        color: #00b894;
+        border: 1px solid #ccfce8;
+      }
+    </style>
   </head>
-  <body
-    style="
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f8f9fa;
-    "
-  >
-    <nav style="background-color: #343a40; color: white; padding: 1rem">
-      <a
-        href="/"
-        style="color: white; margin-right: 20px; text-decoration: none"
-        >Home</a
-      >
-      <a
-        href="/reports"
-        style="color: white; margin-right: 20px; text-decoration: none"
-        >Reports</a
-      >
-      <a
-        href="/media"
-        style="color: white; margin-right: 20px; text-decoration: none"
-        >Media</a
-      >
-      <a
-        href="/donate"
-        style="color: white; margin-right: 20px; text-decoration: none"
-        >Donate</a
-      >
-      <a href="/livemap" style="color: white; text-decoration: none"
-        >Live Map</a
-      >
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/reports">Reports</a>
+      <a href="/media">Media</a>
+      <a href="/livemap">Live Map</a>
+      <% if(currentUser && currentUser.userType === 'donor') { %>
+        <a href="/donor/dashboard">My Dashboard</a>
+      <% } else if(currentUser && currentUser.userType === 'admin') { %>
+        <a href="/admin">Admin</a>
+      <% } %>
+      <span style="margin-left: auto; color: white;">
+        <% if(currentUser) { %>
+          Welcome, <%= currentUser.name || currentUser.username %> |
+          <a href="/logout">Logout</a>
+        <% } else { %>
+          <a href="/login">Login</a>
+        <% } %>
+      </span>
     </nav>
 
-    <div style="padding: 2rem">
-      <h1 style="color: #343a40">Disaster Reports</h1>
-      <a
-        href="/reports/new"
-        style="
-          background-color: #007bff;
-          color: white;
-          padding: 10px 15px;
-          text-decoration: none;
-          border-radius: 5px;
-        "
-        >+ New Report</a
-      >
+    <div class="container">
+      <% if(success && success.length) { %>
+        <div class="alert alert-success">
+          <%= success %>
+        </div>
+      <% } %>
+      
+      <div class="header">
+        <h1>Disaster Reports</h1>
+        <a href="/reports/new" class="btn btn-new">+ New Report</a>
+      </div>
+      
+      <div class="filters">
+        <a href="/reports" class="filter-btn <%= filter === 'all' ? 'active' : '' %>">All Reports</a>
+        <a href="/reports?filter=needs" class="filter-btn <%= filter === 'needs' ? 'active' : '' %>">Resources Needed</a>
+        <a href="/reports?filter=fulfilled" class="filter-btn <%= filter === 'fulfilled' ? 'active' : '' %>">All Needs Fulfilled</a>
+      </div>
 
-      <div style="margin-top: 2rem">
-        <% allReports.forEach(report => { %>
-        <div
-          style="
-            background: white;
-            border: 1px solid #ccc;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-          "
-        >
-          <h3 style="margin: 0"><%= report.name %></h3>
-          <p style="margin: 5px 0">
-            <strong>Status:</strong> <%= report.status %>
-          </p>
-          <p style="margin: 5px 0">
-            <strong>Type:</strong> <%= report.disasterType %>
-          </p>
-          <a href="/reports/<%= report._id %>" style="color: #007bff">View</a>
+      <div class="reports-grid">
+        <% allReports.forEach(report => { 
+          // Helper function to check if report has unfulfilled requirements
+          function hasUnfulfilledRequirements(report) {
+            if (!report.requirements) return false;
+            
+            const r = report.requirements;
+            
+            return (
+              (r.food?.needed && (r.food.remainingNeeded > 0 || !r.food.fulfilled)) ||
+              (r.water?.needed && (r.water.remainingNeeded > 0 || !r.water.fulfilled)) ||
+              (r.medicine?.needed && (r.medicine.remainingNeeded > 0 || !r.medicine.fulfilled)) ||
+              (r.clothing?.needed && (r.clothing.remainingNeeded > 0 || !r.clothing.fulfilled)) ||
+              (r.shelter?.needed && (r.shelter.remainingNeeded > 0 || !r.shelter.fulfilled)) ||
+              (r.volunteers?.needed && (r.volunteers.remainingNeeded > 0 || !r.volunteers.fulfilled)) ||
+              (r.other?.needed && !r.other.fulfilled)
+            );
+          }
+          
+          const needsResources = hasUnfulfilledRequirements(report);
+          
+          // Count how many different requirements are needed
+          let requirementsCount = 0;
+          if (report.requirements) {
+            const r = report.requirements;
+            if (r.food?.needed) requirementsCount++;
+            if (r.water?.needed) requirementsCount++;
+            if (r.medicine?.needed) requirementsCount++;
+            if (r.clothing?.needed) requirementsCount++;
+            if (r.shelter?.needed) requirementsCount++;
+            if (r.volunteers?.needed) requirementsCount++;
+            if (r.other?.needed) requirementsCount++;
+          }
+        %>
+        <div class="report-card">
+          <h3><%= report.name %></h3>
+          <span class="status-badge status-<%= report.status %>">
+            <%= report.status.charAt(0).toUpperCase() + report.status.slice(1) %>
+          </span>
+          
+          <div class="report-info">
+            <p><strong>Type:</strong> <%= report.disasterType %></p>
+            <p class="report-date"><strong>Date:</strong> <%= new Date(report.createdAt).toLocaleString() %></p>
+            
+            <% if (requirementsCount > 0) { %>
+              <p class="requirements-summary">
+                <% if (needsResources) { %>
+                  <span class="needs-badge has-needs">Resources Needed</span>
+                <% } else { %>
+                  <span class="needs-badge fulfilled">All Needs Fulfilled</span>
+                <% } %>
+                (<%= requirementsCount %> requirement <%= requirementsCount === 1 ? 'type' : 'types' %>)
+              </p>
+            <% } %>
+          </div>
+          
+          <div class="report-footer">
+            <a href="/reports/<%= report._id %>" class="view-link">View Details</a>
+          </div>
         </div>
         <% }) %>
       </div>
+      
+      <% if (allReports.length === 0) { %>
+        <div style="text-align: center; padding: 3rem;">
+          <h2>No reports found</h2>
+          <p>There are currently no disaster reports matching your filter.</p>
+        </div>
+      <% } %>
     </div>
   </body>
 </html>

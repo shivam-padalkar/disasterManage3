@@ -2,73 +2,227 @@
 <html>
   <head>
     <title>Report Details</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f1f2f6;
+      }
+      nav {
+        background-color: #2f3542;
+        color: white;
+        padding: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .container {
+        padding: 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .report-card {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+      }
+      .actions {
+        margin-top: 2rem;
+        display: flex;
+        gap: 10px;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        display: inline-block;
+        cursor: pointer;
+        border: none;
+      }
+      .edit-btn {
+        background-color: #ffa502;
+        color: white;
+      }
+      .delete-btn {
+        background-color: #ff4757;
+        color: white;
+      }
+      .donate-btn {
+        background-color: #28a745;
+        color: white;
+      }
+      .back-link {
+        color: #1e90ff;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 1rem;
+      }
+      .requirements-section {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        border-left: 4px solid #1e90ff;
+      }
+      .requirement-item {
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .requirement-item .progress {
+        flex: 1;
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        margin: 0 10px;
+        overflow: hidden;
+      }
+      .requirement-item .progress-bar {
+        height: 100%;
+        background-color: #1e90ff;
+      }
+      .reported-by {
+        margin-top: 1rem;
+        font-style: italic;
+        color: #666;
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+      .status-critical {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+      .status-resolved {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .donations-section {
+        margin-top: 2rem;
+        padding: 1rem;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      th, td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+      }
+      th {
+        background-color: #e9ecef;
+      }
+      .donor-name {
+        font-weight: 600;
+      }
+      .donation-status {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+      .delivered {
+        background-color: #cce5ff;
+        color: #004085;
+      }
+      .confirmed {
+        background-color: #d4edda;
+        color: #155724;
+      }
+      .alert {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border-radius: 6px;
+      }
+      .alert-success {
+        background-color: #e5fff2;
+        color: #00b894;
+        border: 1px solid #ccfce8;
+      }
+      .alert-danger {
+        background-color: #ffe5e5;
+        color: #d63031;
+        border: 1px solid #ffcccc;
+      }
+    </style>
   </head>
-  <body
-    style="
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f1f2f6;
-    "
-  >
-    <nav style="background-color: #2f3542; color: white; padding: 1rem">
-      <a
-        href="/"
-        style="color: white; margin-right: 20px; text-decoration: none"
-        >Home</a
-      >
-      <a
-        href="/reports"
-        style="color: white; margin-right: 20px; text-decoration: none"
-        >Reports</a
-      >
-      <a
-        href="/media"
-        style="color: white; margin-right: 20px; text-decoration: none"
-        >Media</a
-      >
-      <a
-        href="/donate"
-        style="color: white; margin-right: 20px; text-decoration: none"
-        >Donate</a
-      >
-      <a href="/livemap" style="color: white; text-decoration: none"
-        >Live Map</a
-      >
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/reports">Reports</a>
+      <a href="/media">Media</a>
+      <a href="/livemap">Live Map</a>
+      <% if(currentUser && currentUser.userType === 'donor') { %>
+        <a href="/donor/dashboard">My Dashboard</a>
+      <% } else if(currentUser && currentUser.userType === 'admin') { %>
+        <a href="/admin">Admin</a>
+      <% } %>
+      <span style="margin-left: auto; color: white;">
+        <% if(currentUser) { %>
+          Welcome, <%= currentUser.name || currentUser.username %> |
+          <a href="/logout">Logout</a>
+        <% } else { %>
+          <a href="/login">Login</a>
+        <% } %>
+      </span>
     </nav>
 
-    <div style="padding: 2rem">
+    <div class="container">
+      <% if(success && success.length) { %>
+        <div class="alert alert-success">
+          <%= success %>
+        </div>
+      <% } %>
+      
+      <% if(error && error.length) { %>
+        <div class="alert alert-danger">
+          <%= error %>
+        </div>
+      <% } %>
+      
       <h1 style="color: #2f3542">Disaster Report Details</h1>
 
-      <div
-        style="
-          background-color: white;
-          padding: 2rem;
-          border-radius: 8px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-          max-width: 700px;
-        "
-      >
-        <p><strong>Name:</strong> <%= report.name %></p>
+      <div class="report-card">
+        <h2><%= report.name %> 
+          <span class="status-badge status-<%= report.status %>">
+            <%= report.status.charAt(0).toUpperCase() + report.status.slice(1) %>
+          </span>
+        </h2>
+        
         <p><strong>Message:</strong> <%= report.message %></p>
         <p><strong>Latitude:</strong> <%= report.location.lat %></p>
         <p><strong>Longitude:</strong> <%= report.location.lng %></p>
-        <p><strong>Status:</strong> <%= report.status %></p>
         <p><strong>Disaster Type:</strong> <%= report.disasterType %></p>
         <p>
-          <strong>Date:</strong> <%= new Date(report.createdAt).toLocaleString()
-          %>
+          <strong>Date:</strong> <%= new Date(report.createdAt).toLocaleString() %>
         </p>
-
-        <!-- <% if (report.image && report.image.url) { %>
-        <div style="margin-top: 1rem">
-          <img
-            src="<%= report.image.url %>"
-            alt="Report Image"
-            style="max-width: 100%; border-radius: 6px"
-          />
-        </div>
-        <% } %> -->
 
         <% if (report.image) { %>
         <img
@@ -78,45 +232,204 @@
         />
         <% } %>
 
-        <div style="margin-top: 2rem">
-          <a
-            href="/reports/<%= report._id %>/edit"
-            style="
-              background-color: #ffa502;
-              color: white;
-              padding: 0.5rem 1rem;
-              text-decoration: none;
-              border-radius: 4px;
-            "
-            >Edit</a
-          >
+        <!-- Requirements Section -->
+        <div class="requirements-section">
+          <h3>Resources & Requirements Needed</h3>
+          
+          <% 
+          let hasRequirements = false;
+          
+          if (report.requirements) {
+            const r = report.requirements;
+            
+            // Food
+            if (r.food && r.food.needed) { 
+              hasRequirements = true;
+              const fulfilled = r.food.fulfilled || 0;
+              const total = r.food.quantity || 0;
+              const percentage = total > 0 ? Math.min(100, (fulfilled / total) * 100) : 0;
+            %>
+              <div class="requirement-item">
+                <span><strong>Food Supplies:</strong></span>
+                <div class="progress">
+                  <div class="progress-bar" style="width: <%= percentage %>%"></div>
+                </div>
+                <span><%= fulfilled %> of <%= total %> packs</span>
+              </div>
+            <% } 
+            
+            // Water
+            if (r.water && r.water.needed) { 
+              hasRequirements = true;
+              const fulfilled = r.water.fulfilled || 0;
+              const total = r.water.quantity || 0;
+              const percentage = total > 0 ? Math.min(100, (fulfilled / total) * 100) : 0;
+            %>
+              <div class="requirement-item">
+                <span><strong>Clean Water:</strong></span>
+                <div class="progress">
+                  <div class="progress-bar" style="width: <%= percentage %>%"></div>
+                </div>
+                <span><%= fulfilled %> of <%= total %> liters</span>
+              </div>
+            <% } 
+            
+            // Medicine
+            if (r.medicine && r.medicine.needed) { 
+              hasRequirements = true;
+              const fulfilled = r.medicine.fulfilled || 0;
+              const total = r.medicine.quantity || 0;
+              const percentage = total > 0 ? Math.min(100, (fulfilled / total) * 100) : 0;
+            %>
+              <div class="requirement-item">
+                <span><strong>Medical Supplies:</strong></span>
+                <div class="progress">
+                  <div class="progress-bar" style="width: <%= percentage %>%"></div>
+                </div>
+                <span><%= fulfilled %> of <%= total %> kits</span>
+              </div>
+            <% } 
+            
+            // Clothing
+            if (r.clothing && r.clothing.needed) { 
+              hasRequirements = true;
+              const fulfilled = r.clothing.fulfilled || 0;
+              const total = r.clothing.quantity || 0;
+              const percentage = total > 0 ? Math.min(100, (fulfilled / total) * 100) : 0;
+            %>
+              <div class="requirement-item">
+                <span><strong>Clothing:</strong></span>
+                <div class="progress">
+                  <div class="progress-bar" style="width: <%= percentage %>%"></div>
+                </div>
+                <span><%= fulfilled %> of <%= total %> sets</span>
+              </div>
+            <% } 
+            
+            // Shelter
+            if (r.shelter && r.shelter.needed) { 
+              hasRequirements = true;
+              const fulfilled = r.shelter.fulfilled || 0;
+              const total = r.shelter.quantity || 0;
+              const percentage = total > 0 ? Math.min(100, (fulfilled / total) * 100) : 0;
+            %>
+              <div class="requirement-item">
+                <span><strong>Temporary Shelter:</strong></span>
+                <div class="progress">
+                  <div class="progress-bar" style="width: <%= percentage %>%"></div>
+                </div>
+                <span><%= fulfilled %> of <%= total %> units</span>
+              </div>
+            <% } 
+            
+            // Volunteers
+            if (r.volunteers && r.volunteers.needed) { 
+              hasRequirements = true;
+              const fulfilled = r.volunteers.fulfilled || 0;
+              const total = r.volunteers.quantity || 0;
+              const percentage = total > 0 ? Math.min(100, (fulfilled / total) * 100) : 0;
+            %>
+              <div class="requirement-item">
+                <span><strong>Volunteers:</strong></span>
+                <div class="progress">
+                  <div class="progress-bar" style="width: <%= percentage %>%"></div>
+                </div>
+                <span><%= fulfilled %> of <%= total %> people</span>
+              </div>
+            <% } 
+            
+            // Other
+            if (r.other && r.other.needed) { 
+              hasRequirements = true; %>
+              <div class="requirement-item">
+                <span><strong>Other Requirements:</strong></span>
+                <span><%= r.other.details %></span>
+                <span><%= r.other.fulfilled ? 'Fulfilled' : 'Not Fulfilled' %></span>
+              </div>
+            <% }
+          }
+          
+          if (!hasRequirements) { %>
+            <p>No specific requirements reported.</p>
+          <% } else if (currentUser && currentUser.userType === 'donor') { %>
+            <div style="margin-top: 1rem;">
+              <a href="/donate/<%= report._id %>" class="btn donate-btn">Donate Resources</a>
+            </div>
+          <% } else if (!currentUser) { %>
+            <div style="margin-top: 1rem;">
+              <a href="/login" class="btn donate-btn">Login to Donate</a>
+            </div>
+          <% } %>
+        </div>
 
-          <form
-            action="/reports/<%= report._id %>?_method=DELETE"
-            method="POST"
-            style="display: inline"
-          >
-            <button
-              type="submit"
-              style="
-                background-color: #ff4757;
-                color: white;
-                padding: 0.5rem 1rem;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-              "
+        <!-- Donations Section -->
+        <% if (report.donations && report.donations.length > 0) { %>
+        <div class="donations-section">
+          <h3>Donations</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Donor</th>
+                <th>Resource</th>
+                <th>Quantity</th>
+                <th>Date</th>
+                <th>Status</th>
+                <% if (currentUser && currentUser.userType === 'admin') { %>
+                <th>Actions</th>
+                <% } %>
+              </tr>
+            </thead>
+            <tbody>
+              <% report.donations.forEach((donation, idx) => { %>
+              <tr>
+                <td class="donor-name"><%= donation.donorId ? (donation.donorId.name || donation.donorId.username) : 'Anonymous' %></td>
+                <td><%= donation.requirementType %></td>
+                <td><%= donation.quantity %></td>
+                <td><%= new Date(donation.donatedOn).toLocaleDateString() %></td>
+                <td>
+                  <span class="donation-status <%= donation.status %>">
+                    <%= donation.status.charAt(0).toUpperCase() + donation.status.slice(1) %>
+                  </span>
+                </td>
+                <% if (currentUser && currentUser.userType === 'admin') { %>
+                <td>
+                  <% if (donation.status === 'pending') { %>
+                  <form action="/donation/<%= report._id %>/<%= idx %>/delivered" method="POST" style="display:inline">
+                    <button class="btn btn-primary" style="background-color: #0275d8; font-size: 0.8rem; padding: 0.3rem 0.6rem;">Mark Delivered</button>
+                  </form>
+                  <% } else if (donation.status === 'delivered') { %>
+                  <form action="/donation/<%= report._id %>/<%= idx %>/confirmed" method="POST" style="display:inline">
+                    <button class="btn btn-success" style="background-color: #5cb85c; font-size: 0.8rem; padding: 0.3rem 0.6rem;">Confirm Receipt</button>
+                  </form>
+                  <% } %>
+                </td>
+                <% } %>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+
+        <p class="reported-by">Reported by: <%= report.reportedBy || 'Anonymous' %></p>
+
+        <div class="actions">
+          <% if (currentUser && currentUser.userType === 'admin') { %>
+            <a href="/reports/<%= report._id %>/edit" class="btn edit-btn">Edit</a>
+
+            <form
+              action="/reports/<%= report._id %>?_method=DELETE"
+              method="POST"
+              style="display: inline"
+              onsubmit="return confirm('Are you sure you want to delete this report?');"
             >
-              Delete
-            </button>
-          </form>
+              <button type="submit" class="btn delete-btn">Delete</button>
+            </form>
+          <% } %>
         </div>
       </div>
 
-      <br />
-      <a href="/reports" style="color: #1e90ff; text-decoration: none"
-        >← Back to All Reports</a
-      >
+      <a href="/reports" class="back-link">← Back to All Reports</a>
     </div>
   </body>
 </html>

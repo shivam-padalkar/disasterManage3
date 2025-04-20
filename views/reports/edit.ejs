@@ -1,65 +1,300 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Report</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #f9fafc;
+      color: #2f3542;
+    }
+    nav {
+      background-color: #2f3542;
+      padding: 1rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .container {
+      max-width: 700px;
+      margin: 3rem auto;
+      background: white;
+      padding: 2rem 2.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    h1 {
+      color: #2f3542;
+      margin-top: 0;
+    }
+    label {
+      font-weight: 600;
+      margin-top: 1rem;
+      display: block;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.3rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      background: #1e90ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #map {
+      height: 300px;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+    }
+    .back-link {
+      color: #1e90ff;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 1rem;
+    }
+    .requirements-section {
+      border: 1px solid #e6e6e6;
+      padding: 1.5rem;
+      border-radius: 6px;
+      margin: 1.5rem 0;
+      background-color: #f9fafc;
+    }
+    .requirement-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .requirement-item input[type="checkbox"] {
+      width: auto;
+      margin-right: 10px;
+    }
+    .requirement-item input[type="number"] {
+      width: 100px;
+      margin-left: 10px;
+    }
+    .quantity-field {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 10px;
+    }
+    .quantity-field input {
+      width: 80px;
+      margin: 0 5px;
+    }
+    .quantity-field label {
+      margin: 0;
+      display: inline;
+      font-weight: normal;
+    }
+    .other-details {
+      margin-left: 30px;
+      margin-top: 0.5rem;
+      width: calc(100% - 30px);
+    }
+  </style>
 </head>
-<body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f1f2f6; margin: 0; padding: 0;">
-
-  <nav style="background-color: #2f3542; color: white; padding: 1rem;">
-    <a href="/" style="color: white; margin-right: 20px; text-decoration: none;">Home</a>
-    <a href="/reports" style="color: white; margin-right: 20px; text-decoration: none;">Reports</a>
-    <a href="/media" style="color: white; margin-right: 20px; text-decoration: none;">Media</a>
-    <a href="/donate" style="color: white; margin-right: 20px; text-decoration: none;">Donate</a>
-    <a href="/livemap" style="color: white; text-decoration: none;">Live Map</a>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/reports">Reports</a>
+    <a href="/media">Media</a>
+    <a href="/donate">Donate</a>
+    <a href="/livemap">Live Map</a>
   </nav>
 
-  <div style="padding: 2rem;">
-    <h1 style="color: #2f3542;">Edit Disaster Report</h1>
+  <div class="container">
+    <h1>Edit Disaster Report</h1>
+    
+    <form action="/reports/<%= report._id %>?_method=PUT" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" name="report[name]" id="name" value="<%= report.name %>" required>
+      
+      <label for="message">Message:</label>
+      <textarea name="report[message]" id="message" rows="4" required><%= report.message %></textarea>
+      
+      <label for="lat">Latitude:</label>
+      <input type="text" name="report[location][lat]" id="lat" value="<%= report.location.lat %>" readonly>
+      
+      <label for="lng">Longitude:</label>
+      <input type="text" name="report[location][lng]" id="lng" value="<%= report.location.lng %>" readonly>
+      
+      <div id="map"></div>
+      
+      <label for="status">Status:</label>
+      <select name="report[status]" id="status">
+        <option value="pending" <%= report.status === 'pending' ? 'selected' : '' %>>Pending</option>
+        <option value="critical" <%= report.status === 'critical' ? 'selected' : '' %>>Critical</option>
+        <option value="resolved" <%= report.status === 'resolved' ? 'selected' : '' %>>Resolved</option>
+      </select>
+      
+      <label for="type">Disaster Type:</label>
+      <select name="report[disasterType]" id="type" required>
+        <option value="Earthquake" <%= report.disasterType === 'Earthquake' ? 'selected' : '' %>>Earthquake</option>
+        <option value="Flood" <%= report.disasterType === 'Flood' ? 'selected' : '' %>>Flood</option>
+        <option value="Cyclone" <%= report.disasterType === 'Cyclone' ? 'selected' : '' %>>Cyclone</option>
+        <option value="Landslide" <%= report.disasterType === 'Landslide' ? 'selected' : '' %>>Landslide</option>
+        <option value="Wildfire" <%= report.disasterType === 'Wildfire' ? 'selected' : '' %>>Wildfire</option>
+        <option value="Tsunami" <%= report.disasterType === 'Tsunami' ? 'selected' : '' %>>Tsunami</option>
+        <option value="Drought" <%= report.disasterType === 'Drought' ? 'selected' : '' %>>Drought</option>
+        <option value="Volcanic Eruption" <%= report.disasterType === 'Volcanic Eruption' ? 'selected' : '' %>>Volcanic Eruption</option>
+        <option value="Thunderstorm" <%= report.disasterType === 'Thunderstorm' ? 'selected' : '' %>>Thunderstorm</option>
+        <option value="Heatwave" <%= report.disasterType === 'Heatwave' ? 'selected' : '' %>>Heatwave</option>
+      </select>
 
-    <form action="/reports/<%= report._id %>?_method=PUT" method="POST" enctype="multipart/form-data" style="background-color: white; padding: 2rem; border-radius: 8px; max-width: 700px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+      <!-- Requirements Section -->
+      <div class="requirements-section">
+        <h3>Requirements Needed</h3>
+        <p>Check all resources needed in the affected area and specify quantities if applicable:</p>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="food" name="report[requirements][food][needed]" value="true" 
+            <%= report.requirements?.food?.needed ? 'checked' : '' %> onchange="toggleQuantity('food')">
+          <label for="food">Food Supplies</label>
+          <div id="food-quantity" class="quantity-field" style="display: <%= report.requirements?.food?.needed ? 'flex' : 'none' %>">
+            <label for="food-qty">Quantity:</label>
+            <input type="number" id="food-qty" name="report[requirements][food][quantity]" min="0" 
+              value="<%= report.requirements?.food?.quantity || '' %>">
+            <span>packs</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="water" name="report[requirements][water][needed]" value="true" 
+            <%= report.requirements?.water?.needed ? 'checked' : '' %> onchange="toggleQuantity('water')">
+          <label for="water">Clean Water</label>
+          <div id="water-quantity" class="quantity-field" style="display: <%= report.requirements?.water?.needed ? 'flex' : 'none' %>">
+            <label for="water-qty">Quantity:</label>
+            <input type="number" id="water-qty" name="report[requirements][water][quantity]" min="0" 
+              value="<%= report.requirements?.water?.quantity || '' %>">
+            <span>liters</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="medicine" name="report[requirements][medicine][needed]" value="true" 
+            <%= report.requirements?.medicine?.needed ? 'checked' : '' %> onchange="toggleQuantity('medicine')">
+          <label for="medicine">Medical Supplies</label>
+          <div id="medicine-quantity" class="quantity-field" style="display: <%= report.requirements?.medicine?.needed ? 'flex' : 'none' %>">
+            <label for="medicine-qty">Quantity:</label>
+            <input type="number" id="medicine-qty" name="report[requirements][medicine][quantity]" min="0" 
+              value="<%= report.requirements?.medicine?.quantity || '' %>">
+            <span>kits</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="clothing" name="report[requirements][clothing][needed]" value="true" 
+            <%= report.requirements?.clothing?.needed ? 'checked' : '' %> onchange="toggleQuantity('clothing')">
+          <label for="clothing">Clothing</label>
+          <div id="clothing-quantity" class="quantity-field" style="display: <%= report.requirements?.clothing?.needed ? 'flex' : 'none' %>">
+            <label for="clothing-qty">Quantity:</label>
+            <input type="number" id="clothing-qty" name="report[requirements][clothing][quantity]" min="0" 
+              value="<%= report.requirements?.clothing?.quantity || '' %>">
+            <span>sets</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="shelter" name="report[requirements][shelter][needed]" value="true" 
+            <%= report.requirements?.shelter?.needed ? 'checked' : '' %> onchange="toggleQuantity('shelter')">
+          <label for="shelter">Temporary Shelter</label>
+          <div id="shelter-quantity" class="quantity-field" style="display: <%= report.requirements?.shelter?.needed ? 'flex' : 'none' %>">
+            <label for="shelter-qty">Quantity:</label>
+            <input type="number" id="shelter-qty" name="report[requirements][shelter][quantity]" min="0" 
+              value="<%= report.requirements?.shelter?.quantity || '' %>">
+            <span>units</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="volunteers" name="report[requirements][volunteers][needed]" value="true" 
+            <%= report.requirements?.volunteers?.needed ? 'checked' : '' %> onchange="toggleQuantity('volunteers')">
+          <label for="volunteers">Volunteers Needed</label>
+          <div id="volunteers-quantity" class="quantity-field" style="display: <%= report.requirements?.volunteers?.needed ? 'flex' : 'none' %>">
+            <label for="volunteers-qty">Quantity:</label>
+            <input type="number" id="volunteers-qty" name="report[requirements][volunteers][quantity]" min="0" 
+              value="<%= report.requirements?.volunteers?.quantity || '' %>">
+            <span>people</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="other" name="report[requirements][other][needed]" value="true" 
+            <%= report.requirements?.other?.needed ? 'checked' : '' %> onchange="toggleOther()">
+          <label for="other">Other Requirements</label>
+        </div>
+        
+        <textarea id="other-details" name="report[requirements][other][details]" 
+          placeholder="Please specify other requirements needed..." 
+          class="other-details" rows="3" 
+          style="display: <%= report.requirements?.other?.needed ? 'block' : 'none' %>"><%= report.requirements?.other?.details || '' %></textarea>
+      </div>
 
-      <label style="font-weight: bold;">Name:</label>
-      <input type="text" name="report[name]" value="<%= report.name %>" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;"><br>
-
-      <label style="font-weight: bold;">Message:</label>
-      <textarea name="report[message]" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;"><%= report.message %></textarea><br>
-
-      <label style="font-weight: bold;">Latitude:</label>
-      <input type="number" name="report[location][lat]" step="any" value="<%= report.location.lat %>" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;"><br>
-
-      <label style="font-weight: bold;">Longitude:</label>
-      <input type="number" name="report[location][lng]" step="any" value="<%= report.location.lng %>" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;"><br>
-
-      <label style="font-weight: bold;">Status:</label>
-      <select name="report[status]" style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;">
-        <option value="pending" <%= report.status === "pending" ? "selected" : "" %>>Pending</option>
-        <option value="critical" <%= report.status === "critical" ? "selected" : "" %>>Critical</option>
-        <option value="resolved" <%= report.status === "resolved" ? "selected" : "" %>>Resolved</option>
-      </select><br>
-
-      <label style="font-weight: bold;">Disaster Type:</label>
-      <select name="report[disasterType]" id="disasterType" required style="width: 100%; padding: 0.5rem; margin-bottom: 1rem;">
-        <option disabled value="">-- Select Disaster Type --</option>
-        <option value="Earthquake" <%= report.disasterType === "Earthquake" ? "selected" : "" %>>Earthquake</option>
-        <option value="Flood" <%= report.disasterType === "Flood" ? "selected" : "" %>>Flood</option>
-        <option value="Cyclone" <%= report.disasterType === "Cyclone" ? "selected" : "" %>>Cyclone</option>
-        <option value="Landslide" <%= report.disasterType === "Landslide" ? "selected" : "" %>>Landslide</option>
-        <option value="Wildfire" <%= report.disasterType === "Wildfire" ? "selected" : "" %>>Wildfire</option>
-        <option value="Tsunami" <%= report.disasterType === "Tsunami" ? "selected" : "" %>>Tsunami</option>
-        <option value="Drought" <%= report.disasterType === "Drought" ? "selected" : "" %>>Drought</option>
-        <option value="Volcanic Eruption" <%= report.disasterType === "Volcanic Eruption" ? "selected" : "" %>>Volcanic Eruption</option>
-        <option value="Thunderstorm" <%= report.disasterType === "Thunderstorm" ? "selected" : "" %>>Thunderstorm</option>
-        <option value="Heatwave" <%= report.disasterType === "Heatwave" ? "selected" : "" %>>Heatwave</option>
-      </select><br>
-
-      <label style="font-weight: bold;">Upload Image:</label>
-      <input type="file" name="image" accept="image/*" style="margin-bottom: 1rem;"><br>
-
-      <button type="submit" style="background-color: #1e90ff; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; cursor: pointer;">Update Report</button>
+      <input type="hidden" name="report[reportedBy]" value="<%= report.reportedBy || 'muhammadparkar' %>">
+      
+      <button type="submit">Update Report</button>
     </form>
-
-    <br>
-    <a href="/reports/<%= report._id %>" style="color: #1e90ff; text-decoration: none;">← Back to Report</a>
+    
+    <a href="/reports/<%= report._id %>" class="back-link">← Back to Report</a>
   </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize the map
+    const lat = <%= report.location.lat %>;
+    const lng = <%= report.location.lng %>;
+    const map = L.map('map').setView([lat, lng], 12);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Add a marker at the report location
+    L.marker([lat, lng]).addTo(map);
+
+    // Toggle quantity fields based on checkbox
+    function toggleQuantity(type) {
+      const checkbox = document.getElementById(type);
+      const quantityField = document.getElementById(`${type}-quantity`);
+      if (checkbox.checked) {
+        quantityField.style.display = 'flex';
+      } else {
+        quantityField.style.display = 'none';
+        document.getElementById(`${type}-qty`).value = '';
+      }
+    }
+
+    // Toggle other details textarea
+    function toggleOther() {
+      const checkbox = document.getElementById('other');
+      const otherDetails = document.getElementById('other-details');
+      if (checkbox.checked) {
+        otherDetails.style.display = 'block';
+      } else {
+        otherDetails.style.display = 'none';
+        otherDetails.value = '';
+      }
+    }
+  </script>
 </body>
 </html>

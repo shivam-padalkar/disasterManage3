@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alerts - Disaster Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    
+    nav {
+      background-color: #2f3542;
+      padding: 1rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    header {
+      background-color: #e74c3c;
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .alerts-list {
+      margin-top: 2rem;
+    }
+    
+    .alert-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+      border-left: 4px solid #e74c3c;
+    }
+    
+    .alert-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .alert-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+    
+    .alert-date {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    
+    .alert-message {
+      margin-bottom: 1rem;
+    }
+    
+    .alert-actions {
+      margin-top: 1rem;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      font-size: 0.9rem;
+    }
+    
+    .btn-primary {
+      background-color: #1e90ff;
+      color: white;
+    }
+    
+    .alert-type {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+    
+    .alert-type-new {
+      background-color: #e74c3c;
+      color: white;
+    }
+    
+    .alert-type-update {
+      background-color: #f39c12;
+      color: white;
+    }
+    
+    .alert-type-donation {
+      background-color: #27ae60;
+      color: white;
+    }
+    
+    .no-alerts {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/reports">Reports</a>
+    <a href="/media">Media</a>
+    <a href="/livemap">Live Map</a>
+    <a href="/alerts">Alerts</a>
+    <% if(currentUser && currentUser.userType === 'donor') { %>
+      <a href="/donor/dashboard">My Dashboard</a>
+    <% } else if(currentUser && currentUser.userType === 'admin') { %>
+      <a href="/admin">Admin</a>
+    <% } %>
+    <span style="margin-left: auto; color: white;">
+      <% if(currentUser) { %>
+        Welcome, <%= currentUser.name || currentUser.username %> |
+        <a href="/logout">Logout</a>
+      <% } else { %>
+        <a href="/login">Login</a>
+      <% } %>
+    </span>
+  </nav>
+  
+  <header>
+    <h1>Disaster Alerts</h1>
+    <p>Stay informed about disaster events and resource needs</p>
+  </header>
+  
+  <main>
+    <div class="alerts-list">
+      <% if (alerts.length === 0) { %>
+        <div class="no-alerts">
+          <h2>No alerts at this time</h2>
+          <p>You'll be notified when new disasters are reported or when donation needs change.</p>
+        </div>
+      <% } else { %>
+        <% alerts.forEach(alert => { %>
+          <div class="alert-card">
+            <div class="alert-header">
+              <h2 class="alert-title">
+                <%= alert.title %>
+                <% if (alert.alertType === 'new_disaster') { %>
+                  <span class="alert-type alert-type-new">New Disaster</span>
+                <% } else if (alert.alertType === 'update') { %>
+                  <span class="alert-type alert-type-update">Update</span>
+                <% } else if (alert.alertType === 'donation_received') { %>
+                  <span class="alert-type alert-type-donation">Donation</span>
+                <% } %>
+              </h2>
+              <span class="alert-date"><%= new Date(alert.createdAt).toLocaleString() %></span>
+            </div>
+            
+            <div class="alert-message">
+              <%= alert.message %>
+            </div>
+            
+            <div class="alert-actions">
+              <a href="/reports/<%= alert.reportId %>" class="btn btn-primary">View Report</a>
+            </div>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+  </main>
+</body>
+</html>

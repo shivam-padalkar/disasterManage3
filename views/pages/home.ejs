@@ -1,136 +1,305 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Disaster Management Portal</title>
-  </head>
-  <body
-    style="
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disaster Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
       margin: 0;
-      min-height: 100vh;
+      padding: 0;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    
+    nav {
+      background-color: #2f3542;
+      padding: 1rem 2rem;
       display: flex;
-      flex-direction: column;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f9fafb;
-      color: #111827;
-    "
-  >
-    <div style="flex: 1; display: flex; flex-direction: column">
-      <!-- Navbar -->
-      <nav
-        style="
-          background-color: #1f2937;
-          padding: 1rem 2rem;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        "
-      >
-        <h1 style="color: #ffffff; font-size: 1.5rem">
-          आपदा रक्षक - Disaster Management System
-        </h1>
-        <div>
-          <a
-            href="/"
-            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
-            >Home</a
-          >
-          <a
-            href="/reports"
-            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
-            >Reports</a
-          >
-          <a
-            href="/livemap"
-            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
-            >Live Map</a
-          >
-          <a
-            href="/donate"
-            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
-            >Donate</a
-          >
-          <a
-            href="/media"
-            style="color: #ffffff; text-decoration: none; margin: 0 1rem"
-            >Media</a
-          >
-        </div>
-      </nav>
-
-      <!-- Hero Section (Full remaining height) with Background Image -->
-      <section
-        style="
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          padding: 2rem;
-          background-image: url('/uploads/collage03.jpg');
-          background-size: cover;
-          background-position: center;
-          background-repeat: no-repeat;
-          color: white;
-        "
-      >
-        <div
-          style="
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 2rem;
-            border-radius: 12px;
-          "
-        >
-          <h2 style="font-size: 3rem; margin-bottom: 1rem">
-            Be Prepared. Stay Safe.
-          </h2>
-          <p style="font-size: 1.25rem; max-width: 700px">
-            Our platform allows you to report disasters, view live updates, and
-            contribute to relief efforts.
-          </p>
-          <div style="margin-top: 2rem">
-            <a
-              href="/reports/new"
-              style="
-                background-color: #2563eb;
-                color: white;
-                padding: 0.75rem 1.5rem;
-                text-decoration: none;
-                border-radius: 6px;
-                font-weight: bold;
-                margin: 0 1rem;
-              "
-              >Report Now</a
-            >
-            <a
-              href="/livemap"
-              style="
-                border: 2px solid #2563eb;
-                color: #2563eb;
-                padding: 0.75rem 1.5rem;
-                text-decoration: none;
-                border-radius: 6px;
-                font-weight: bold;
-                margin: 0 1rem;
-                background-color: white;
-              "
-              >Live Map</a
-            >
-          </div>
-        </div>
-      </section>
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .hero {
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/images/disaster-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      padding: 8rem 2rem;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+    
+    .cta-button {
+      display: inline-block;
+      background-color: #1e90ff;
+      color: white;
+      padding: 0.75rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: background-color 0.2s;
+    }
+    
+    .cta-button:hover {
+      background-color: #1873cc;
+    }
+    
+    .features {
+      padding: 5rem 2rem;
+      text-align: center;
+      background-color: white;
+    }
+    
+    .features h2 {
+      font-size: 2rem;
+      margin-bottom: 3rem;
+      color: #2f3542;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .feature-item {
+      padding: 2rem;
+    }
+    
+    .feature-icon {
+      font-size: 3rem;
+      color: #1e90ff;
+      margin-bottom: 1.5rem;
+    }
+    
+    .feature-item h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #2f3542;
+    }
+    
+    .recent-disasters {
+      padding: 5rem 2rem;
+      background-color: #f5f7fa;
+    }
+    
+    .recent-disasters h2 {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      color: #2f3542;
+    }
+    
+    .disasters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .disaster-card {
+      background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    
+    .disaster-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    
+    .disaster-content {
+      padding: 1.5rem;
+    }
+    
+    .disaster-content h3 {
+      margin-top: 0;
+      font-size: 1.3rem;
+    }
+    
+    .disaster-content p {
+      margin-bottom: 1rem;
+      color: #666;
+    }
+    
+    .disaster-status {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-critical {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .status-resolved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .view-more {
+      display: block;
+      text-align: center;
+      margin-top: 3rem;
+    }
+    
+    .view-more a {
+      color: #1e90ff;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    
+    footer {
+      background-color: #2f3542;
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    
+    footer p {
+      margin: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/reports">Reports</a>
+    <a href="/media">Media</a>
+    <a href="/livemap">Live Map</a>
+    <% if(currentUser && currentUser.userType === 'donor') { %>
+      <a href="/donor/dashboard">My Dashboard</a>
+    <% } else if(currentUser && currentUser.userType === 'admin') { %>
+      <a href="/admin">Admin</a>
+    <% } %>
+    <span style="margin-left: auto; color: white;">
+      <% if(currentUser) { %>
+        Welcome, <%= currentUser.name || currentUser.username %> |
+        <a href="/logout">Logout</a>
+      <% } else { %>
+        <a href="/login">Login</a>
+      <% } %>
+    </span>
+  </nav>
+  
+  <section class="hero">
+    <h1>Disaster Management System</h1>
+    <p>Help communities recover from disasters by providing real-time reports, tracking resources, and facilitating donations.</p>
+    <a href="/reports" class="cta-button">View Reports</a>
+  </section>
+  
+  <section class="features">
+    <h2>How Our Platform Works</h2>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">📝</div>
+        <h3>Report Disasters</h3>
+        <p>Submit detailed reports about disasters with location information and resource requirements.</p>
+      </div>
+      
+      <div class="feature-item">
+        <div class="feature-icon">🗺️</div>
+        <h3>Live Map</h3>
+        <p>View disaster locations on an interactive map to understand affected areas and coordinate response efforts.</p>
+      </div>
+      
+      <div class="feature-item">
+        <div class="feature-icon">🤝</div>
+        <h3>Donate Resources</h3>
+        <p>Easily donate required resources to help affected communities recover faster.</p>
+      </div>
     </div>
-
-    <!-- Footer -->
-    <footer
-      style="
-        text-align: center;
-        padding: 1rem;
-        background-color: #1f2937;
-        color: white;
-      "
-    >
-      <p>&copy; 2025 Disaster Management Team. All rights reserved.</p>
-    </footer>
-  </body>
+  </section>
+  
+  <section class="recent-disasters">
+    <h2>Recent Disasters</h2>
+    <div class="disasters-grid">
+      <!-- This will be populated by server with recent reports -->
+      <div class="disaster-card">
+        <img src="/uploads/placeholder.jpg" alt="Disaster Image">
+        <div class="disaster-content">
+          <span class="disaster-status status-critical">Critical</span>
+          <h3>Flood in Mumbai</h3>
+          <p>Heavy rainfall has caused flooding in several areas of Mumbai, affecting thousands of residents.</p>
+          <p><strong>Date:</strong> April 18, 2025</p>
+          <a href="/reports" style="color: #1e90ff; font-weight: 600;">View Details</a>
+        </div>
+      </div>
+      
+      <div class="disaster-card">
+        <img src="/uploads/placeholder.jpg" alt="Disaster Image">
+        <div class="disaster-content">
+          <span class="disaster-status status-pending">Pending</span>
+          <h3>Earthquake in Delhi</h3>
+          <p>A 5.8 magnitude earthquake has affected parts of Delhi and surrounding areas.</p>
+          <p><strong>Date:</strong> April 15, 2025</p>
+          <a href="/reports" style="color: #1e90ff; font-weight: 600;">View Details</a>
+        </div>
+      </div>
+      
+      <div class="disaster-card">
+        <img src="/uploads/placeholder.jpg" alt="Disaster Image">
+        <div class="disaster-content">
+          <span class="disaster-status status-resolved">Resolved</span>
+          <h3>Cyclone in Chennai</h3>
+          <p>Cyclone has been successfully managed with minimal damage to property and no casualties.</p>
+          <p><strong>Date:</strong> April 10, 2025</p>
+          <a href="/reports" style="color: #1e90ff; font-weight: 600;">View Details</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="view-more">
+      <a href="/reports">View All Reports →</a>
+    </div>
+  </section>
+  
+  <footer>
+    <p>&copy; 2025 Disaster Management System | Developed by <%= currentUser ? currentUser.name || currentUser.username : 'muhammadparkar' %></p>
+  </footer>
+</body>
 </html>

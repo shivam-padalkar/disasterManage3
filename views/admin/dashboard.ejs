@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Disaster Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    nav {
+      background-color: #2f3542;
+      padding: 1rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    header {
+      background-color: #1e3a8a;
+      color: white;
+      padding: 2rem;
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    
+    main {
+      padding: 2rem;
+      flex: 1;
+    }
+    
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .stat-card h3 {
+      margin-top: 0;
+      color: #555;
+      font-size: 1.2rem;
+    }
+    
+    .stat-card .stat-value {
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #1e3a8a;
+      margin: 0.5rem 0;
+    }
+    
+    .section-heading {
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: #2f3542;
+      font-size: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .reports-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .report-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .report-card h4 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    
+    .report-card .report-status {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-critical {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    
+    .status-resolved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      font-size: 0.9rem;
+    }
+    
+    .btn-primary {
+      background-color: #1e90ff;
+      color: white;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+    
+    .alert {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+    }
+    
+    .alert-success {
+      background-color: #e5fff2;
+      color: #00b894;
+      border: 1px solid #ccfce8;
+    }
+    
+    .alert-danger {
+      background-color: #ffe5e5;
+      color: #d63031;
+      border: 1px solid #ffcccc;
+    }
+    
+    .alerts-list {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .alert-item {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .alert-item:last-child {
+      border-bottom: none;
+    }
+    
+    .alert-item .alert-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .alert-item .alert-time {
+      font-size: 0.8rem;
+      color: #777;
+    }
+    
+    .alert-type {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+    
+    .alert-type-new {
+      background-color: #e3f2fd;
+      color: #0d47a1;
+    }
+    
+    .alert-type-update {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+    
+    .alert-type-donation {
+      background-color: #d1e7dd;
+      color: #0f5132;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/reports">Reports</a>
+    <a href="/media">Media</a>
+    <a href="/livemap">Live Map</a>
+    <a href="/alerts">Alerts</a>
+    <a href="/admin">Admin</a>
+    <span style="margin-left: auto; color: white;">
+      <% if(currentUser) { %>
+        Welcome, <%= currentUser.name || currentUser.username %> |
+        <a href="/logout">Logout</a>
+      <% } else { %>
+        <a href="/login">Login</a>
+      <% } %>
+    </span>
+  </nav>
+  
+  <header>
+    <h1>Admin Dashboard</h1>
+    <p>Manage disaster reports, users, and donations</p>
+  </header>
+  
+  <main>
+    <% if(success && success.length) { %>
+      <div class="alert alert-success">
+        <%= success %>
+      </div>
+    <% } %>
+    
+    <% if(error && error.length) { %>
+      <div class="alert alert-danger">
+        <%= error %>
+      </div>
+    <% } %>
+    
+    <div class="dashboard-stats">
+      <div class="stat-card">
+        <h3>Total Reports</h3>
+        <div class="stat-value"><%= reports.length %></div>
+        <p><%= reports.filter(r => r.status === 'pending').length %> pending, <%= reports.filter(r => r.status === 'resolved').length %> resolved</p>
+      </div>
+      
+      <div class="stat-card">
+        <h3>Registered Donors</h3>
+        <div class="stat-value"><%= users.length %></div>
+        <p>Active donors in the system</p>
+      </div>
+      
+      <div class="stat-card">
+        <h3>Total Donations</h3>
+        <% 
+          let donationsCount = 0;
+          reports.forEach(report => {
+            donationsCount += report.donations ? report.donations.length : 0;
+          });
+        %>
+        <div class="stat-value"><%= donationsCount %></div>
+        <p>Donation commitments made</p>
+      </div>
+    </div>
+    
+    <h2 class="section-heading">Recent Reports</h2>
+    <div class="reports-list">
+      <% reports.slice(0, 6).forEach(report => { %>
+        <div class="report-card">
+          <h4><%= report.name %></h4>
+          <span class="report-status status-<%= report.status %>">
+            <%= report.status.charAt(0).toUpperCase() + report.status.slice(1) %>
+          </span>
+          <p><strong>Type:</strong> <%= report.disasterType %></p>
+          <p><strong>Date:</strong> <%= new Date(report.createdAt).toLocaleDateString() %></p>
+          <a href="/reports/<%= report._id %>" class="btn btn-primary">View Details</a>
+        </div>
+      <% }) %>
+    </div>
+    
+    <h2 class="section-heading">Recent Alerts</h2>
+    <div class="alerts-list">
+      <% if(alerts.length === 0) { %>
+        <p>No recent alerts.</p>
+      <% } %>
+      
+      <% alerts.forEach(alert => { %>
+        <div class="alert-item">
+          <div class="alert-title">
+            <%= alert.title %>
+            <% if(alert.alertType === 'new_disaster') { %>
+              <span class="alert-type alert-type-new">New</span>
+            <% } else if(alert.alertType === 'update') { %>
+              <span class="alert-type alert-type-update">Update</span>
+            <% } else if(alert.alertType === 'donation_received') { %>
+              <span class="alert-type alert-type-donation">Donation</span>
+            <% } %>
+          </div>
+          <p><%= alert.message %></p>
+          <div class="alert-time">
+            <%= new Date(alert.createdAt).toLocaleString() %> |
+            <a href="/reports/<%= alert.reportId %>">View Report</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    
+    <h2 class="section-heading">Registered Donors</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Registered On</th>
+          <th>Donations Made</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(user => { %>
+          <tr>
+            <td><%= user.username %></td>
+            <td><%= user.name %></td>
+            <td><%= user.email %></td>
+            <td><%= user.phone %></td>
+            <td><%= new Date(user.registeredOn).toLocaleDateString() %></td>
+            <td><%= user.donationsMade ? user.donationsMade.length : 0 %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

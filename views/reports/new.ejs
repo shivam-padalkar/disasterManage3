@@ -68,6 +68,47 @@
       margin-bottom: 1rem;
       display: none;
     }
+    .requirements-section {
+      border: 1px solid #e6e6e6;
+      padding: 1.5rem;
+      border-radius: 6px;
+      margin: 1.5rem 0;
+      background-color: #f9fafc;
+    }
+    .requirement-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .requirement-item input[type="checkbox"] {
+      width: auto;
+      margin-right: 10px;
+    }
+    .requirement-item input[type="number"] {
+      width: 100px;
+      margin-left: 10px;
+    }
+    .quantity-field {
+      display: none;
+      flex-direction: row;
+      align-items: center;
+      margin-left: 10px;
+    }
+    .quantity-field input {
+      width: 80px;
+      margin: 0 5px;
+    }
+    .quantity-field label {
+      margin: 0;
+      display: inline;
+      font-weight: normal;
+    }
+    .other-details {
+      display: none;
+      margin-left: 30px;
+      margin-top: 0.5rem;
+      width: calc(100% - 30px);
+    }
   </style>
 </head>
 <body>
@@ -81,34 +122,30 @@
 
   <div class="container">
     <h1>Submit a New Disaster Report</h1>
-    <form action="/reports" method="POST" enctype="multipart/form-data">
+    <form action="/reports" method="POST" enctype="multipart/form-data" id="reportForm">
       <label for="name">Name:</label>
       <input type="text" name="report[name]" id="name" required />
 
       <label for="message">Message:</label>
       <textarea name="report[message]" id="message" rows="4" required></textarea>
 
-      <!-- <label for="location">Location (City/Area):</label> -->
-      <!-- <input type="text" id="location" placeholder="Enter a location (e.g., Mumbai)" required /> -->
-
       <label for="location">Location (City/Area):</label>
-        <div style="display: flex; flex-wrap: nowrap; gap: 10px; align-items: center; margin-bottom: 1rem;">
-          <input 
-            type="text" 
-            id="location" 
-              placeholder="Enter a location (e.g., Mumbai)" 
-              required 
-              style="flex: 1; padding: 0.75rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;" 
-      />
-  <button 
-    type="button" 
-    id="fetchBtn" 
-    style="white-space: nowrap; padding: 0.75rem 1rem; background: #ffa502; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-bottom: 0.8rem"
-  >
-    Fetch
-  </button>
-</div>
-
+      <div style="display: flex; flex-wrap: nowrap; gap: 10px; align-items: center; margin-bottom: 1rem;">
+        <input 
+          type="text" 
+          id="location" 
+          placeholder="Enter a location (e.g., Mumbai)" 
+          required 
+          style="flex: 1; padding: 0.75rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;" 
+        />
+        <button 
+          type="button" 
+          id="fetchBtn" 
+          style="white-space: nowrap; padding: 0.75rem 1rem; background: #ffa502; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-bottom: 0.8rem"
+        >
+          Fetch
+        </button>
+      </div>
 
       <label for="lat">Latitude:</label>
       <input type="text" name="report[location][lat]" id="lat" readonly />
@@ -140,6 +177,88 @@
         <option value="Heatwave">Heatwave</option>
       </select>
 
+      <!-- New Requirements Section -->
+      <div class="requirements-section">
+        <h3>Requirements Needed</h3>
+        <p>Check all resources needed in the affected area and specify quantities if applicable:</p>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="food" name="report[requirements][food][needed]" value="true" onchange="toggleQuantity('food')">
+          <input type="hidden" name="report[requirements][food][needed]" value="false" class="checkbox-hidden">
+          <label for="food">Food Supplies</label>
+          <div id="food-quantity" class="quantity-field">
+            <label for="food-qty">Quantity:</label>
+            <input type="number" id="food-qty" name="report[requirements][food][quantity]" min="0">
+            <span>packs</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="water" name="report[requirements][water][needed]" value="true" onchange="toggleQuantity('water')">
+          <input type="hidden" name="report[requirements][water][needed]" value="false" class="checkbox-hidden">
+          <label for="water">Clean Water</label>
+          <div id="water-quantity" class="quantity-field">
+            <label for="water-qty">Quantity:</label>
+            <input type="number" id="water-qty" name="report[requirements][water][quantity]" min="0">
+            <span>liters</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="medicine" name="report[requirements][medicine][needed]" value="true" onchange="toggleQuantity('medicine')">
+          <input type="hidden" name="report[requirements][medicine][needed]" value="false" class="checkbox-hidden">
+          <label for="medicine">Medical Supplies</label>
+          <div id="medicine-quantity" class="quantity-field">
+            <label for="medicine-qty">Quantity:</label>
+            <input type="number" id="medicine-qty" name="report[requirements][medicine][quantity]" min="0">
+            <span>kits</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="clothing" name="report[requirements][clothing][needed]" value="true" onchange="toggleQuantity('clothing')">
+          <input type="hidden" name="report[requirements][clothing][needed]" value="false" class="checkbox-hidden">
+          <label for="clothing">Clothing</label>
+          <div id="clothing-quantity" class="quantity-field">
+            <label for="clothing-qty">Quantity:</label>
+            <input type="number" id="clothing-qty" name="report[requirements][clothing][quantity]" min="0">
+            <span>sets</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="shelter" name="report[requirements][shelter][needed]" value="true" onchange="toggleQuantity('shelter')">
+          <input type="hidden" name="report[requirements][shelter][needed]" value="false" class="checkbox-hidden">
+          <label for="shelter">Temporary Shelter</label>
+          <div id="shelter-quantity" class="quantity-field">
+            <label for="shelter-qty">Quantity:</label>
+            <input type="number" id="shelter-qty" name="report[requirements][shelter][quantity]" min="0">
+            <span>units</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="volunteers" name="report[requirements][volunteers][needed]" value="true" onchange="toggleQuantity('volunteers')">
+          <input type="hidden" name="report[requirements][volunteers][needed]" value="false" class="checkbox-hidden">
+          <label for="volunteers">Volunteers Needed</label>
+          <div id="volunteers-quantity" class="quantity-field">
+            <label for="volunteers-qty">Quantity:</label>
+            <input type="number" id="volunteers-qty" name="report[requirements][volunteers][quantity]" min="0">
+            <span>people</span>
+          </div>
+        </div>
+        
+        <div class="requirement-item">
+          <input type="checkbox" id="other" name="report[requirements][other][needed]" value="true" onchange="toggleOther()">
+          <input type="hidden" name="report[requirements][other][needed]" value="false" class="checkbox-hidden">
+          <label for="other">Other Requirements</label>
+        </div>
+        
+        <textarea id="other-details" name="report[requirements][other][details]" placeholder="Please specify other requirements needed..." class="other-details" rows="3"></textarea>
+      </div>
+
+      <input type="hidden" name="report[reportedBy]" value="muhammadparkar">
+
       <label for="image">Upload Image:</label>
       <input type="file" id="image" name="image" accept="image/*" />
       <img id="preview" />
@@ -151,7 +270,6 @@
   <!-- Scripts -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-  
   const locationInput = document.getElementById('location');
   const fetchBtn = document.getElementById('fetchBtn');
   const latInput = document.getElementById('lat');
@@ -198,6 +316,56 @@
     }
   });
 
+  // Toggle quantity fields based on checkbox
+  function toggleQuantity(type) {
+    const checkbox = document.getElementById(type);
+    const quantityField = document.getElementById(`${type}-quantity`);
+    const hiddenField = checkbox.nextElementSibling;
+    
+    if (checkbox.checked) {
+      quantityField.style.display = 'flex';
+      checkbox.value = 'true';
+      hiddenField.disabled = true; // Disable hidden field when checkbox is checked
+    } else {
+      quantityField.style.display = 'none';
+      document.getElementById(`${type}-qty`).value = '';
+      checkbox.value = 'false';
+      hiddenField.disabled = false; // Enable hidden field when checkbox is unchecked
+    }
+  }
+
+  // Toggle other details textarea
+  function toggleOther() {
+    const checkbox = document.getElementById('other');
+    const otherDetails = document.getElementById('other-details');
+    const hiddenField = checkbox.nextElementSibling;
+    
+    if (checkbox.checked) {
+      otherDetails.style.display = 'block';
+      checkbox.value = 'true';
+      hiddenField.disabled = true; // Disable hidden field when checkbox is checked
+    } else {
+      otherDetails.style.display = 'none';
+      otherDetails.value = '';
+      checkbox.value = 'false';
+      hiddenField.disabled = false; // Enable hidden field when checkbox is unchecked
+    }
+  }
+
+  // Handle form submission to ensure correct checkbox values
+  document.getElementById('reportForm').addEventListener('submit', function(e) {
+    // Handle checkboxes properly
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        // If checkbox is checked, disable the hidden field so only the checked value is submitted
+        const hiddenField = checkbox.nextElementSibling;
+        if (hiddenField && hiddenField.classList.contains('checkbox-hidden')) {
+          hiddenField.disabled = true;
+        }
+      }
+    });
+  });
   </script>
 </body>
 </html>
